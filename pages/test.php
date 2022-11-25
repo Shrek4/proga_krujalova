@@ -1,7 +1,7 @@
 <?php
 require "../config.php";
 
-$questions = mysqli_query($connection, "SELECT * FROM questions WHERE id=".(int)$_GET['question_id'].";");
+$question = mysqli_query($connection, "SELECT * FROM questions WHERE id=".(int)$_GET['question_id'].";");
 
 $questions_count = mysqli_query($connection, "SELECT * FROM questions;");
 // $num_question=(int)$_GET['question'];
@@ -14,24 +14,28 @@ function print_answers($question_id, $conn, $count_questions)
     while ($item = mysqli_fetch_assoc($answers)) {
 ?>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="question_id" id="exampleRadios1" value=<?php echo $item["next_question_id"]; ?>>
-            <label class="form-check-label" for="exampleRadios1">
+            <input class="form-check-input" type="radio" name="question_id" id="answer_<?php echo $item["id"]; ?>" value=<?php echo $item["next_question_id"]; ?>>
+            <label class="form-check-label" for="answer_<?php echo $item["id"]; ?>">
                 <?php echo $item["text"]; ?>
             </label>
         </div>
 <?php
     }
 
-    if($question_id!=$count_questions){
+    if($item["next_question_id"]!=0){
         ?><button type="submit" class="btn btn-primary">Далее</button><?php
     }
     else{
-        ?><button type="submit" class="btn btn-primary" >Готово</button><?php
+        ?><button type="submit" class="btn btn-primary" onClick='location.href="results.php"'>Готово</button><?php
     }
 }
 
 function add_user_answer($conn, $question_id, $answer_id){
-    mysqli_query($conn, "INSERT INTO user_answers (question_id, answer_id) VALUES (".$question_id.",".$answer_id.");");
+    mysqli_query($conn, "INSERT INTO user_answers (question_id, answer_id) VALUES (".$question_id.", ".$answer_id.");");
+}
+
+function save_user_answers($data){
+    file_put_contents('user_answers.json', json_encode($data));
 }
 
 ?>
@@ -57,7 +61,7 @@ function add_user_answer($conn, $question_id, $answer_id){
 
         <form class="questions_form" action="test.php" method="get">
             <?php 
-            $item = mysqli_fetch_assoc($questions) 
+            $item = mysqli_fetch_assoc($question) 
 
             ?><h3><?php echo $item["text"]; ?></h3><?php 
             
