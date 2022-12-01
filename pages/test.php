@@ -1,5 +1,13 @@
 <?php
 require "../config.php";
+session_start();
+// session_unset();
+
+$answer = $_GET['answer'] ?? null;
+
+if ($answer !== null) {
+    add_user_answer($_GET['answer_question_id'], $answer);
+}
 
 $question = mysqli_query($connection, "SELECT * FROM questions WHERE id=".(int)$_GET['question_id'].";");
 
@@ -10,28 +18,36 @@ $questions_count = mysqli_query($connection, "SELECT * FROM questions;");
 function print_answers($question_id, $conn, $count_questions)
 {
     $answers = mysqli_query($conn, "SELECT * FROM answers WHERE answers.question_id=" . $question_id . ";");
-    
+    $item=0;
     while ($item = mysqli_fetch_assoc($answers)) {
 ?>
         <div class="form-check">
             <input class="form-check-input" type="radio" name="question_id" id="answer_<?php echo $item["id"]; ?>" value=<?php echo $item["next_question_id"]; ?>>
+            <input class="form-check-input" type="hidden" name="answer" value=<?php echo $item["id"]; ?>>
+            <input class="form-check-input" type="hidden" name="answer_question_id" value=<?php echo $item["question_id"]; ?>>
             <label class="form-check-label" for="answer_<?php echo $item["id"]; ?>">
                 <?php echo $item["text"]; ?>
             </label>
         </div>
 <?php
     }
-
+    
     if($item["next_question_id"]!=0){
-        ?><button type="submit" class="btn btn-primary">Далее</button><?php
+        
+        ?><button type="submit" class="btn btn-primary" onclick="">Далее</button><?php
     }
     else{
-        ?><button type="submit" class="btn btn-primary" onClick='location.href="results.php"'>Готово</button><?php
+        ?><button type="submit" class="btn btn-primary">Готово</button><?php
+
+        save_user_answers($_SESSION['answers']);
     }
 }
 
-function add_user_answer($conn, $question_id, $answer_id){
-    mysqli_query($conn, "INSERT INTO user_answers (question_id, answer_id) VALUES (".$question_id.", ".$answer_id.");");
+function add_user_answer($question_id, $answer_id){
+    $_SESSION['answers'][] = [
+        'question_id' => $question_id,
+        'answer_id' => $answer_id,
+    ];
 }
 
 function save_user_answers($data){
@@ -70,5 +86,5 @@ function save_user_answers($data){
         </form>
     </div>
 </body>
-
+<script src="test.js"></script>
 </html>
