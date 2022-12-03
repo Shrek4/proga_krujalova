@@ -29,7 +29,7 @@ require "../config.php";
             <p class="titleResult">Исходя из ответов, Вам больше подойдёт:</p>
 
 
-            <img src="https://sun1-24.userapi.com/c848216/u117292075/docs/d3/64b014e3142a/Rick_Rolled.gif?extra=iqIbY4YibDACLTBpKubhcZeinYBeQkd5aeXXEOUZPutCbOokR2gcOaOhwQOU525ypuZ2vf89fzYOrk2ga-6LQWhWcUDGAbyBXeZ9ZGgkkXMY2yWvSrteZs7Oaku2EE8efB7M3xGSr4_FPtVmQPP4sW37MA">
+            <img src="https://media.tenor.com/x8v1oNUOmg4AAAAM/rickroll-roll.gif">
         </div>
     </div>
 </body>

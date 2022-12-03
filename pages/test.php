@@ -32,12 +32,12 @@ function print_answers($question_id, $conn, $count_questions)
 <?php
     }
     
-    if($item["next_question_id"]!=0){
+    if($question_id!=18){
         
-        ?><button type="submit" class="btn btn-primary" onclick="">Далее</button><?php
+        ?><button type="submit" class="btn btn-primary" >Далее</button><?php
     }
     else{
-        ?><button type="submit" class="btn btn-primary">Готово</button><?php
+        ?><button type="button" onClick='location.href="results.php"' class="btn btn-primary">Готово</button><?php
 
         save_user_answers($_SESSION['answers']);
     }
