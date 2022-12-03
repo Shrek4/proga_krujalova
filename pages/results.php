@@ -1,6 +1,6 @@
 <?php
 require "../config.php";
-
+session_start();
 
 ?>
 
@@ -30,6 +30,8 @@ require "../config.php";
 
 
             <img src="https://media.tenor.com/x8v1oNUOmg4AAAAM/rickroll-roll.gif">
+            <br>
+            <?php print_r($_SESSION); ?>
         </div>
     </div>
 </body>

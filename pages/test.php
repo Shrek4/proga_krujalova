@@ -31,7 +31,7 @@ function print_answers($question_id, $conn, $count_questions)
         </div>
 <?php
     }
-    
+
     if($question_id!=18){
         
         ?><button type="submit" class="btn btn-primary" >Далее</button><?php
@@ -39,8 +39,9 @@ function print_answers($question_id, $conn, $count_questions)
     else{
         ?><button type="button" onClick='location.href="results.php"' class="btn btn-primary">Готово</button><?php
 
-        save_user_answers($_SESSION['answers']);
+        // save_user_answers($_SESSION['answers']);
     }
+    print_r($_SESSION);
 }
 
 function add_user_answer($question_id, $answer_id){
@@ -50,9 +51,9 @@ function add_user_answer($question_id, $answer_id){
     ];
 }
 
-function save_user_answers($data){
-    file_put_contents('user_answers.json', json_encode($data));
-}
+// function save_user_answers($data){
+//     file_put_contents('user_answers.json', json_encode($data));
+// }
 
 ?>
 

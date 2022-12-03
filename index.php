@@ -1,6 +1,7 @@
 <?php
 require "config.php";
-
+session_start();
+session_unset();
 ?>
 
 <!DOCTYPE HTML>
@@ -20,7 +21,7 @@ require "config.php";
     <div class="main-block">
 
         <button type="button" class="btn btn-primary btn-lg" onClick='location.href="pages/test.php?question_id=1"'>Начать тест</button>
-
+        <?php print_r($_SESSION); ?>
     </div>
 
 </body>
