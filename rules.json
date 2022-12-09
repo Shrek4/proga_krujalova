@@ -1,0 +1,28 @@
+{
+    "easy-pete":
+    [
+        {
+            "id":1,
+            "parameter": "",
+            "sign": "",
+            "par_value": "",
+            "attribute": "",
+            "attr_value": ""
+        }
+    ],
+    "difficult-pete":
+    [
+        {
+            "id":1,
+            "parameter1": "",
+            "sign1": "",
+            "par_value1": "",
+            "union": "and",
+            "parameter2": "",
+            "sign2": "",
+            "par_value2": "",
+            "attribute": "",
+            "attr_value": ""
+        }
+    ]
+}

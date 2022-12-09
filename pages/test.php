@@ -22,7 +22,7 @@ function print_answers($question_id, $conn, $count_questions)
     while ($item = mysqli_fetch_assoc($answers)) {
 ?>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="question_id" id="answer_<?php echo $item["id"]; ?>" value=<?php echo $item["next_question_id"]; ?>>
+            <input checked class="form-check-input" type="radio" name="question_id" id="answer_<?php echo $item["id"]; ?>" value=<?php echo $item["next_question_id"]; ?>>
             <input class="form-check-input" type="hidden" name="answer" value=<?php echo $item["id"]; ?>>
             <input class="form-check-input" type="hidden" name="answer_question_id" value=<?php echo $item["question_id"]; ?>>
             <label class="form-check-label" for="answer_<?php echo $item["id"]; ?>">
@@ -41,7 +41,6 @@ function print_answers($question_id, $conn, $count_questions)
 
         // save_user_answers($_SESSION['answers']);
     }
-    print_r($_SESSION);
 }
 
 function add_user_answer($question_id, $answer_id){

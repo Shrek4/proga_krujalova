@@ -2,6 +2,51 @@
 require "../config.php";
 session_start();
 
+# получаем параметры
+$temp=mysqli_query($connection, "SELECT * FROM parameters;");
+$parameters=array();
+while(($row =  mysqli_fetch_assoc($temp))) {
+    $parameters[] = $row;
+}
+
+# получаем список активов
+$temp=mysqli_query($connection, "SELECT * FROM objects;");
+$objects=array();
+while(($row =  mysqli_fetch_assoc($temp))) {
+    $objects[] = $row;
+}
+
+# получаем правила
+$temp = file_get_contents("../rules.json");
+$rules = json_decode($temp, true);
+
+# атрибуты
+$attributes=array();
+$trade_style="";
+
+function setParameters($conn, $answers){
+    
+    global $parameters;
+    foreach($answers as $answer) {
+        $temp=mysqli_fetch_assoc(mysqli_query($conn, "SELECT answers.id AS answer_id, questions.parameter_id, answers.parameter_value FROM answers LEFT JOIN questions ON answers.question_id=questions.id WHERE answers.id=".$answer["answer_id"].";"));
+        $par_id=$temp["parameter_id"];
+        $par_value=$temp["parameter_value"];
+        $parameters[$par_id-1]["value"]=$par_value;
+    }
+}
+
+function setWeights($conn, $rules){
+
+}
+
+function getObjects($conn, $answers){
+    setParameters($conn, $answers);
+    
+    ?>
+    <li>cock</li>
+    <?php
+}
+
 ?>
 
 
@@ -31,7 +76,10 @@ session_start();
 
             <img src="https://media.tenor.com/x8v1oNUOmg4AAAAM/rickroll-roll.gif">
             <br>
-            <?php print_r($_SESSION); ?>
+            <ul>
+                <?php getObjects($connection, $_SESSION["answers"]); ?>
+            </ul>
+            <?php print_r($parameters); ?>
         </div>
     </div>
 </body>
