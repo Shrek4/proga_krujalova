@@ -209,16 +209,23 @@ function getObjects($conn, $answers, $rules, $parameters){
         }
     }
 
-    foreach($result as &$item){
-        $item["amount"]=ceil($item["weight"]/($weight_sum+$deposit+$sum))*floatval($item["min_amount"]);
 
+    foreach($result as &$item){
+        $item["amount"]=round($item["weight"]/($weight_sum+$sum+$deposit)*2500)*floatval($item["min_amount"]);
     }
  
+    if(count($result)==0)
+    {
+        ?>
+        <img src="https://media.tenor.com/x8v1oNUOmg4AAAAM/rickroll-roll.gif">
+        <?php
+    }
     foreach($result as $item){
     ?>
-        <li><?php echo "Актив: ".$item["name"]."; Стоимость: ".$item["price"]."; Количество: ".$item["amount"];?></li>
+        <li><?php echo "Актив: ".$item["name"]."; Стоимость: ".$item["price"]."$; Количество: ".$item["amount"];?></li>
     <?php
     }
+     ?><p><?php //echo "Сумма активов: ".$sum."$" ?></p><?php
 }
 
 ?>
@@ -246,9 +253,6 @@ function getObjects($conn, $answers, $rules, $parameters){
 
         <div class="result">
             <p class="titleResult">Исходя из ответов, Вам больше подойдёт:</p>
-
-
-            <img src="https://media.tenor.com/x8v1oNUOmg4AAAAM/rickroll-roll.gif">
             <br>
             <ul>
                 <?php getObjects($connection, $_SESSION["answers"], $rules, $parameters); ?>
