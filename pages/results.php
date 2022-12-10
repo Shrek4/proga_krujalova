@@ -22,7 +22,7 @@ $rules = json_decode($temp, true);
 
 # атрибуты
 $attributes=array();
-$trade_style="";
+$trade_style="долгосрочная торговля";
 
 function setParameters($conn, $answers){
     
@@ -35,16 +35,190 @@ function setParameters($conn, $answers){
     }
 }
 
-function setWeights($conn, $rules){
 
+function setWeights($rules){
+    global $objects;
+    global $parameters;
+    global $trade_style;
+
+    foreach($rules["easy-pete"] as $rule){
+        $param_id=$rule["parameter"];
+        $par_value=$rule["par_value"];
+
+        if($rule["type"]=="weight"){
+            switch ($rule["operator"]){
+                case "=":
+                    if($parameters[$param_id-1]["value"]==$par_value){
+                        foreach($objects as &$item){
+                            if(in_array($item[$rule["attribute"]], $rule["attr_values"])){
+                                if($rule["weight_operator"]=="+"){
+                                    $item["weight"]+=$rule["weight"];
+                                }
+                                else if($rule["weight_operator"]=="-"){
+                                    $item["weight"]-=$rule["weight"];
+                                }
+                                else{
+                                    $item["weight"]=$rule["weight"];
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                default: break;
+            }
+        }
+        else{
+            switch ($rule["operator"]){
+                case "=":
+                    if($parameters[$param_id-1]["value"]==$par_value){
+                        $trade_style=$rule["style"];
+                    }
+
+                    break;
+                default: break;
+            }
+        }
+    }
+
+    foreach($rules["difficult-pete"] as $rule){
+        $param1_id=$rule["parameter1"];
+        $par1_value=$rule["par_value1"];
+        $param2_id=$rule["parameter2"];
+        $par2_value=$rule["par_value2"];
+        if (($rule["operator1"]=="=") && ($rule["operator2"]=="=")){
+            if(($parameters[$param1_id-1]["value"]==$par1_value)&&($parameters[$param2_id-1]["value"]==$par2_value)){
+                foreach($objects as &$item){
+                    if(in_array($item[$rule["attribute"]], $rule["attr_values"])){
+                        if($rule["weight_operator"]=="+"){
+                            $item["weight"]+=$rule["weight"];
+                        }
+                        else if($rule["weight_operator"]=="-"){
+                            $item["weight"]-=$rule["weight"];
+                        }
+                        else{
+                            $item["weight"]=$rule["weight"];
+                        }
+                    }
+                }
+            }
+        }
+        else if (($rule["operator1"]=="=") && ($rule["operator2"]=="<")){
+            if(($parameters[$param1_id-1]["value"]==$par1_value)&&($parameters[$param2_id-1]["value"]<$par2_value)){
+                foreach($objects as &$item){
+                    if(in_array($item[$rule["attribute"]], $rule["attr_values"])){
+                        if($rule["weight_operator"]=="+"){
+                            $item["weight"]+=$rule["weight"];
+                        }
+                        else if($rule["weight_operator"]=="-"){
+                            $item["weight"]-=$rule["weight"];
+                        }
+                        else{
+                            $item["weight"]=$rule["weight"];
+                        }
+                    }
+                }
+            }
+        }
+        else if (($rule["operator1"]=="=") && ($rule["operator2"]==">")){
+            if(($parameters[$param1_id-1]["value"]==$par1_value)&&($parameters[$param2_id-1]["value"]>$par2_value)){
+                foreach($objects as &$item){
+                    if(in_array($item[$rule["attribute"]], $rule["attr_values"])){
+                        if($rule["weight_operator"]=="+"){
+                            $item["weight"]+=$rule["weight"];
+                        }
+                        else if($rule["weight_operator"]=="-"){
+                            $item["weight"]-=$rule["weight"];
+                        }
+                        else{
+                            $item["weight"]=$rule["weight"];
+                        }
+                    }
+                }
+            }
+        }
+        else if (($rule["operator1"]=="<") && ($rule["operator2"]=="<")){
+            if(($parameters[$param1_id-1]["value"]<$par1_value)&&($parameters[$param2_id-1]["value"]<$par2_value)){
+                foreach($objects as &$item){
+                    if(in_array($item[$rule["attribute"]], $rule["attr_values"])){
+                        if($rule["weight_operator"]=="+"){
+                            $item["weight"]+=$rule["weight"];
+                        }
+                        else if($rule["weight_operator"]=="-"){
+                            $item["weight"]-=$rule["weight"];
+                        }
+                        else{
+                            $item["weight"]=$rule["weight"];
+                        }
+                    }
+                }
+            }
+        }
+        else if (($rule["operator1"]=="<") && ($rule["operator2"]==">")){
+            if(($parameters[$param1_id-1]["value"]<$par1_value)&&($parameters[$param2_id-1]["value"]>$par2_value)){
+                foreach($objects as &$item){
+                    if(in_array($item[$rule["attribute"]], $rule["attr_values"])){
+                        if($rule["weight_operator"]=="+"){
+                            $item["weight"]+=$rule["weight"];
+                        }
+                        else if($rule["weight_operator"]=="-"){
+                            $item["weight"]-=$rule["weight"];
+                        }
+                        else{
+                            $item["weight"]=$rule["weight"];
+                        }
+                    }
+                }
+            }
+        }
+        else if (($rule["operator1"]==">") && ($rule["operator2"]==">")){
+            if(($parameters[$param1_id-1]["value"]>$par1_value)&&($parameters[$param2_id-1]["value"]>$par2_value)){
+                foreach($objects as &$item){
+                    if(in_array($item[$rule["attribute"]], $rule["attr_values"])){
+                        if($rule["weight_operator"]=="+"){
+                            $item["weight"]+=$rule["weight"];
+                        }
+                        else if($rule["weight_operator"]=="-"){
+                            $item["weight"]-=$rule["weight"];
+                        }
+                        else{
+                            $item["weight"]=$rule["weight"];
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
-function getObjects($conn, $answers){
+function getObjects($conn, $answers, $rules, $parameters){
+    global $objects;
     setParameters($conn, $answers);
+    setWeights($rules);
+    $result=array();
+    $weight_sum=0;
+    $sum=0;
+    $deposit=intval($parameters[3]["value"]);
     
+
+    foreach($objects as $object){
+        if($object["weight"]>0) {
+            $result[]=$object;
+            $weight_sum+=$object["weight"];
+            $sum+=$object["price"];
+        }
+    }
+
+    foreach($result as &$item){
+        $item["amount"]=ceil($item["weight"]/($weight_sum+$deposit+$sum))*floatval($item["min_amount"]);
+
+    }
+ 
+    foreach($result as $item){
     ?>
-    <li>cock</li>
+        <li><?php echo "Актив: ".$item["name"]."; Стоимость: ".$item["price"]."; Количество: ".$item["amount"];?></li>
     <?php
+    }
 }
 
 ?>
@@ -77,9 +251,9 @@ function getObjects($conn, $answers){
             <img src="https://media.tenor.com/x8v1oNUOmg4AAAAM/rickroll-roll.gif">
             <br>
             <ul>
-                <?php getObjects($connection, $_SESSION["answers"]); ?>
+                <?php getObjects($connection, $_SESSION["answers"], $rules, $parameters); ?>
             </ul>
-            <?php print_r($parameters); ?>
+            <p>Стиль торговли: <?php echo $trade_style; ?></p>
         </div>
     </div>
 </body>
