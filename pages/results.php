@@ -21,7 +21,6 @@ $temp = file_get_contents("../rules.json");
 $rules = json_decode($temp, true);
 
 # атрибуты
-$attributes=array();
 $trade_style="долгосрочная торговля";
 
 function setParameters($conn, $answers){
@@ -202,16 +201,18 @@ function getObjects($conn, $answers, $rules, $parameters){
     
 
     foreach($objects as $object){
-        if($object["weight"]>0) {
+        if(($object["weight"]>0)&&($object["price"]*$object["min_amount"]<$deposit)) {
             $result[]=$object;
             $weight_sum+=$object["weight"];
             $sum+=$object["price"];
         }
     }
 
-
+    $sum_final=0;
     foreach($result as &$item){
-        $item["amount"]=round($item["weight"]/($weight_sum+$sum+$deposit)*2500)*floatval($item["min_amount"]);
+        $amount=round($item["weight"]/$weight_sum*$deposit/floatval($item["price"])+1.3)*floatval($item["min_amount"]);
+        $item["amount"]=$amount;
+        $sum_final+=$item["price"]*$item["min_amount"]*$amount;
     }
  
     if(count($result)==0)
@@ -225,7 +226,7 @@ function getObjects($conn, $answers, $rules, $parameters){
         <li><?php echo "Актив: ".$item["name"]."; Стоимость: ".$item["price"]."$; Количество: ".$item["amount"];?></li>
     <?php
     }
-     ?><p><?php //echo "Сумма активов: ".$sum."$" ?></p><?php
+     ?><p><?php echo "Сумма активов: ".$sum_final."$" ?></p><?php
 }
 
 ?>
